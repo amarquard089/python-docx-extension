@@ -30,7 +30,7 @@ dynamic = ["version"]
 keywords = ["docx", "office", "openxml", "word"]
 license = { text = "MIT" }
 readme = "README.md"
-requires-python = ">=3.7"
+requires-python = ">=3.11"
 
 [project.urls]
 Changelog = "https://github.com/python-openxml/python-docx/blob/master/HISTORY.rst"
@@ -111,3 +111,10 @@ known-local-folder = ["helpers"]
 
 [tool.setuptools.dynamic]
 version = {attr = "docx.__version__"}
+
+[dependency-groups]
+dev = [
+    "pytest>=8.3.5",
+    "pytest-coverage>=0.0",
+    "pytest-xdist>=3.6.1",
+]

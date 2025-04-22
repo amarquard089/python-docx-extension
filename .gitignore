@@ -8,3 +8,5 @@
 _scratch/
 Session.vim
 /.tox/
+.venv
+tryout.py

@@ -14,6 +14,7 @@ from docx.parts.story import StoryPart
 from docx.parts.styles import StylesPart
 from docx.shape import InlineShapes
 from docx.shared import lazyproperty
+from docx.parts.footnotes import FootnotesPart
 
 if TYPE_CHECKING:
     from docx.opc.coreprops import CoreProperties
@@ -147,3 +148,16 @@ class DocumentPart(StoryPart):
             styles_part = StylesPart.default(package)
             self.relate_to(styles_part, RT.STYLES)
             return styles_part
+
+    @property
+    def _footnotes_part(self):
+        """
+        |FootnotesPart| object related to this package. Creates
+        a default Comments part if one is not present.
+        """
+        try:
+            return self.part_related_by(RT.FOOTNOTES)
+        except KeyError:
+            footnotes_part = FootnotesPart.default(self)
+            self.relate_to(footnotes_part, RT.FOOTNOTES)
+            return footnotes_part

@@ -236,6 +236,17 @@ class Run(StoryChild):
     def underline(self, value: bool):
         self.font.underline = value
 
+    @property
+    def footnote(self):
+        _id = self._r.footnote_id
+
+        if _id is not None:
+            footnotes_part = self._parent._parent.part._footnotes_part.element
+            footnote = footnotes_part.get_footnote_by_id(_id)
+            return footnote.paragraph.text
+        else:
+            return None
+
 
 class _Text:
     """Proxy object wrapping `<w:t>` element."""

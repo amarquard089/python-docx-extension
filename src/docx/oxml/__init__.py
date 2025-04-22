@@ -241,3 +241,10 @@ register_element_cls("w:spacing", CT_Spacing)
 register_element_cls("w:tab", CT_TabStop)
 register_element_cls("w:tabs", CT_TabStops)
 register_element_cls("w:widowControl", CT_OnOff)
+
+from .footnotes import CT_Footnotes, CT_Footnote, CT_FNR, CT_FootnoteRef
+
+register_element_cls("w:footnotes", CT_Footnotes)
+register_element_cls("w:footnote", CT_Footnote)
+register_element_cls("w:footnoteReference", CT_FNR)
+register_element_cls("w:footnoteRef", CT_FootnoteRef)

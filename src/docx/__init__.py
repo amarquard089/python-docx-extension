@@ -9,6 +9,7 @@ from __future__ import annotations
 from typing import TYPE_CHECKING, Type
 
 from docx.api import Document
+from docx.parts.footnotes import FootnotesPart
 
 if TYPE_CHECKING:
     from docx.opc.part import Part
@@ -47,6 +48,7 @@ PartFactory.part_type_for[CT.WML_HEADER] = HeaderPart
 PartFactory.part_type_for[CT.WML_NUMBERING] = NumberingPart
 PartFactory.part_type_for[CT.WML_SETTINGS] = SettingsPart
 PartFactory.part_type_for[CT.WML_STYLES] = StylesPart
+PartFactory.part_type_for[CT.WML_FOOTNOTES] = FootnotesPart
 
 del (
     CT,
@@ -58,5 +60,6 @@ del (
     PartFactory,
     SettingsPart,
     StylesPart,
+    FootnotesPart,
     part_class_selector,
 )
