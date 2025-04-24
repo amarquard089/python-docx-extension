@@ -247,6 +247,12 @@ class Run(StoryChild):
         else:
             return None
 
+    def add_footnote(self, text):
+        footnotes_part = self.part._footnotes_part.element
+        footnote = self._r.add_fn(text, footnotes_part)
+
+        return footnote
+
 
 class _Text:
     """Proxy object wrapping `<w:t>` element."""

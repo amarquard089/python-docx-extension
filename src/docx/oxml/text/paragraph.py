@@ -6,8 +6,11 @@ from __future__ import annotations
 
 from typing import TYPE_CHECKING, Callable, List, cast
 
+from docx.oxml.footnotes import CT_Footnote, CT_Footnotes
 from docx.oxml.parser import OxmlElement
+from docx.oxml.text.font import CT_RPr
 from docx.oxml.xmlchemy import BaseOxmlElement, ZeroOrMore, ZeroOrOne
+from docx.shared import Pt
 
 if TYPE_CHECKING:
     from docx.enum.text import WD_PARAGRAPH_ALIGNMENT
@@ -23,10 +26,12 @@ class CT_P(BaseOxmlElement):
 
     add_r: Callable[[], CT_R]
     get_or_add_pPr: Callable[[], CT_PPr]
+    get_or_add_rPr: Callable[[], CT_RPr]
     hyperlink_lst: List[CT_Hyperlink]
     r_lst: List[CT_R]
 
     pPr: CT_PPr | None = ZeroOrOne("w:pPr")  # pyright: ignore[reportAssignmentType]
+    rPr: CT_RPr | None = ZeroOrOne("w:rPr")
     hyperlink = ZeroOrMore("w:hyperlink")
     r = ZeroOrMore("w:r")
 
@@ -35,6 +40,29 @@ class CT_P(BaseOxmlElement):
         new_p = cast(CT_P, OxmlElement("w:p"))
         self.addprevious(new_p)
         return new_p
+
+    def add_fn(self, text, footnotes_part: CT_Footnotes):
+        footnote = footnotes_part.add_footnote()
+        footnote._add_p(" " + text, font_size=Pt(8.0))
+        _r = self.add_r()
+        _r.add_footnote_reference(footnote._id)
+
+        return footnote
+
+    def footnote_style(self):
+        pPr = self.get_or_add_pPr()
+        rstyle = pPr.get_or_add_pStyle()
+        rstyle.val = "FootnoteText"
+        # rPr = self.get_or_add_rPr()
+        # rFonts = rPr.get_or_add_rFonts()
+        # rFonts.ascii = "Verdana"
+
+        # rFonts.hAnsi = "Verdana"
+        # # CT_Fonts(ascii="Verdana", hAnsi="Verdana")
+        # sz = rPr.get_or_add_sz()
+        # sz.val = Pt(9.0)
+
+        return self
 
     @property
     def alignment(self) -> WD_PARAGRAPH_ALIGNMENT | None:

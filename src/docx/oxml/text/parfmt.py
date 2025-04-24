@@ -11,6 +11,7 @@ from docx.enum.text import (
     WD_TAB_LEADER,
 )
 from docx.oxml.simpletypes import ST_SignedTwipsMeasure, ST_TwipsMeasure
+from docx.oxml.text.font import CT_Fonts
 from docx.oxml.xmlchemy import (
     BaseOxmlElement,
     OneOrMore,

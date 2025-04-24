@@ -43,6 +43,12 @@ class Paragraph(StoryChild):
             run.style = style
         return run
 
+    def add_footnote(self, text):
+        footnotes_part = self.part._footnotes_part.element
+        footnote = self._p.add_fn(text, footnotes_part)
+
+        return footnote
+
     @property
     def alignment(self) -> WD_PARAGRAPH_ALIGNMENT | None:
         """A member of the :ref:`WdParagraphAlignment` enumeration specifying the
@@ -145,6 +151,13 @@ class Paragraph(StoryChild):
     def style(self, style_or_name: str | ParagraphStyle | None):
         style_id = self.part.get_style_id(style_or_name, WD_STYLE_TYPE.PARAGRAPH)
         self._p.style = style_id
+
+    @property
+    def footnotes(self):
+        if self._p.footnote_ids is not None:
+            return True
+        else:
+            return False
 
     @property
     def text(self) -> str:

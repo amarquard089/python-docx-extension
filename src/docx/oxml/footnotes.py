@@ -2,6 +2,7 @@
 Custom element classes related to the footnotes part
 """
 
+from docx.shared import Pt
 from . import OxmlElement
 from .simpletypes import ST_DecimalNumber, ST_String
 from ..text.paragraph import Paragraph
@@ -52,7 +53,7 @@ class CT_Footnote(BaseOxmlElement):
 
         return footnote
 
-    def _add_p(self, text):
+    def _add_p(self, text, font_size: Pt):
         _p = OxmlElement("w:p")
         _p.footnote_style()
 
@@ -63,6 +64,7 @@ class CT_Footnote(BaseOxmlElement):
 
         run = Run(_r, self)
         run.text = text
+        run.font.size = font_size
 
         self._insert_p(_p)
         return _p

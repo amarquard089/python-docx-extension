@@ -6,10 +6,11 @@ from typing import TYPE_CHECKING, Callable, Iterator, List
 
 from docx.oxml.drawing import CT_Drawing
 from docx.oxml.ns import qn
-from docx.oxml.simpletypes import ST_BrClear, ST_BrType
-from docx.oxml.text.font import CT_RPr
+from docx.oxml.simpletypes import ST_BrClear, ST_BrType, ST_HpsMeasure
+from docx.oxml.text.font import CT_Fonts, CT_HpsMeasure, CT_RPr
 from docx.oxml.xmlchemy import BaseOxmlElement, OptionalAttribute, ZeroOrMore, ZeroOrOne
-from docx.shared import TextAccumulator
+from docx.shared import Length, Pt, TextAccumulator
+from .. import OxmlElement
 
 if TYPE_CHECKING:
     from docx.oxml.shape import CT_Anchor, CT_Inline
@@ -51,6 +52,58 @@ class CT_R(BaseOxmlElement):
         drawing = self._add_drawing()
         drawing.append(inline_or_anchor)
         return drawing
+
+    def add_fn(self, text, footnotes_part):
+        footnote = footnotes_part.add_footnote()
+        footnote._add_p(" " + text, font_size=Pt(8.0))
+        self.add_footnote_reference(footnote._id)
+
+        return footnote
+
+    def add_footnote_reference(self, _id):
+        rPr = self.get_or_add_rPr()
+        rPr.superscript = True
+        rstyle = rPr.get_or_add_rStyle()
+        rstyle.val = "FootnoteReference"
+        rFonts = rPr.get_or_add_rFonts()
+        rFonts.ascii = "Verdana"
+        rFonts.hAnsi = "Verdana"
+        rstyle
+        # CT_Fonts(ascii="Verdana", hAnsi="Verdana")
+        sz = rPr.get_or_add_sz()
+        sz.val = Pt(8.0)
+        reference = OxmlElement("w:footnoteReference")
+        reference._id = _id
+        self.append(reference)
+        return reference
+
+    def footnote_style(self):
+        rPr = self.get_or_add_rPr()
+        rPr.superscript = True
+        rstyle = rPr.get_or_add_rStyle()
+        rstyle.val = "FootnoteReference"
+        rFonts = rPr.get_or_add_rFonts()
+        rFonts.ascii = "Verdana"
+        rFonts.hAnsi = "Verdana"
+        # CT_Fonts(ascii="Verdana", hAnsi="Verdana")
+        sz = rPr.get_or_add_sz()
+        sz.val = Pt(8.0)
+        self.add_footnoteRef()
+        return self
+
+    def add_footnoteRef(self):
+        ref = OxmlElement("w:footnoteRef")
+        self.append(ref)
+
+        return ref
+
+    @property
+    def footnote_id(self):
+        _id = self.xpath("./w:footnoteReference/@w:id")
+        if len(_id) > 1 or len(_id) == 0:
+            return None
+        else:
+            return int(_id[0])
 
     def clear_content(self) -> None:
         """Remove all child elements except a `w:rPr` element if present."""
